@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskBoard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.50/daisyui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.7.50/themes.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5/dist/index.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/ext/hx-alpine-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hyperscript.org@0.9.94/dist/_hyperscript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.5/dist/iconify-icon.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/tone@15.1.22/build/Tone.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/intersect@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/resize@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.17.5/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/cdn.min.js"></script>
+</head>
+<body class="min-h-screen"
+  x-data="{
+    mode: 'gui',
+    lang: $persist('en').as('tb-lang'),
+    theme: $persist('light').as('tb-theme'),
+    bg: $persist('mist').as('tb-bg'),
+    photo: '',
+    skies: {mist: 'linear-gradient(135deg,#d7e6e1,#b9cfe0)', dusk: 'linear-gradient(135deg,#f0d9c8,#c9b7d9)', moss: 'linear-gradient(135deg,#cfe3c3,#9fc2b0)'},
+    apps: [
+      {id: 'terminal', icon: 'mdi:console'},
+      {id: 'files', icon: 'mdi:folder-open'},
+      {id: 'jobs', icon: 'mdi:format-list-checks'},
+      {id: 'network', icon: 'mdi:lan'},
+      {id: 'music', icon: 'mdi:music-note'},
+      {id: 'settings', icon: 'mdi:cog'}
+    ],
+    words: {
+      en: {terminal: 'Terminal', files: 'Files', jobs: 'Jobs', network: 'Network', music: 'Music', settings: 'Settings', close: 'Close', gui: 'Icons', cui: 'Text', cli: 'Command line', language: 'Language', theme: 'Theme', background: 'Background', picture: 'Choose a picture', power: 'Keep screen on', ping: 'Test speed', play: 'Play', stop: 'Stop', add: 'Add job', start: 'Start', pickfiles: 'Choose files', pickfolder: 'Choose a folder'},
+      ja: {terminal: 'ターミナル', files: 'ファイル', jobs: 'ジョブ', network: 'ネットワーク', music: '音楽', settings: '設定', close: '閉じる', gui: 'アイコン', cui: 'テキスト', cli: 'コマンド', language: '言語', theme: 'テーマ', background: '背景', picture: '画像を選ぶ', power: '画面をつけたままにする', ping: '速度を測る', play: '再生', stop: '停止', add: 'ジョブを追加', start: '開始', pickfiles: 'ファイルを選ぶ', pickfolder: 'フォルダを選ぶ'},
+      es: {terminal: 'Terminal', files: 'Archivos', jobs: 'Tareas', network: 'Red', music: 'Música', settings: 'Ajustes', close: 'Cerrar', gui: 'Iconos', cui: 'Texto', cli: 'Comandos', language: 'Idioma', theme: 'Tema', background: 'Fondo', picture: 'Elegir imagen', power: 'Mantener pantalla activa', ping: 'Medir velocidad', play: 'Reproducir', stop: 'Detener', add: 'Añadir tarea', start: 'Iniciar', pickfiles: 'Elegir archivos', pickfolder: 'Elegir carpeta'},
+      ar: {terminal: 'الطرفية', files: 'الملفات', jobs: 'المهام', network: 'الشبكة', music: 'الموسيقى', settings: 'الإعدادات', close: 'إغلاق', gui: 'أيقونات', cui: 'نص', cli: 'أوامر', language: 'اللغة', theme: 'المظهر', background: 'الخلفية', picture: 'اختر صورة', power: 'إبقاء الشاشة تعمل', ping: 'قياس السرعة', play: 'تشغيل', stop: 'إيقاف', add: 'إضافة مهمة', start: 'ابدأ', pickfiles: 'اختر ملفات', pickfolder: 'اختر مجلدًا'}
+    },
+    t(k) { return (this.words[this.lang] || this.words.en)[k] },
+    launch(id) { htmx.ajax('GET', 'partials/apps/' + id + '.html', {target: '#window-layer', swap: 'beforeend'}) }
+  }"
+  x-effect="document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.documentElement.dataset.theme = theme"
+  @keydown.window="mode === 'cui' && /^[1-6]$/.test($event.key) && !['INPUT','TEXTAREA','SELECT'].includes($event.target.tagName) && launch(apps[$event.key - 1].id)">
+<main id="desktop" class="min-h-screen pb-24" :style="{background: photo ? 'center / cover no-repeat url(' + photo + ')' : skies[bg]}">
+  <nav x-show="mode === 'gui'" class="flex flex-wrap gap-2 p-4" aria-label="Apps">
+    <template x-for="a in apps" :key="a.id">
+      <button class="btn btn-ghost h-auto min-w-24 flex-col gap-1 p-3" @click="launch(a.id)" :aria-label="t(a.id)">
+        <iconify-icon :icon="a.icon" width="44" height="44"></iconify-icon>
+        <span class="text-sm" x-text="t(a.id)"></span>
+      </button>
+    </template>
+  </nav>
+  <nav x-show="mode === 'cui'" class="p-4 font-mono" aria-label="Apps">
+    <ul class="menu w-64 rounded-box bg-base-100/90">
+      <template x-for="(a, i) in apps" :key="a.id">
+        <li><button @click="launch(a.id)"><span x-text="i + 1"></span><iconify-icon :icon="a.icon" width="20"></iconify-icon><span x-text="t(a.id)"></span></button></li>
+      </template>
+    </ul>
+  </nav>
+  <section id="window-layer" class="grid items-start gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3" aria-live="polite"></section>
+</main>
+<footer class="fixed inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-base-100/90 p-2 shadow-lg backdrop-blur">
+  <div class="join">
+    <button class="btn join-item" :class="mode === 'gui' && 'btn-active'" :aria-pressed="mode === 'gui'" :aria-label="t('gui')" @click="mode = 'gui'"><iconify-icon icon="mdi:view-grid" width="22"></iconify-icon></button>
+    <button class="btn join-item" :class="mode === 'cui' && 'btn-active'" :aria-pressed="mode === 'cui'" :aria-label="t('cui')" @click="mode = 'cui'"><iconify-icon icon="mdi:format-list-numbered" width="22"></iconify-icon></button>
+    <button class="btn join-item" :class="mode === 'cli' && 'btn-active'" :aria-pressed="mode === 'cli'" :aria-label="t('cli')" @click="mode = 'cli'; launch('terminal')"><iconify-icon icon="mdi:console-line" width="22"></iconify-icon></button>
+  </div>
+  <time class="font-mono text-sm" _="init repeat forever put (new Date()).toLocaleTimeString() into me then wait 1s end"></time>
+  <button class="btn btn-ghost btn-square" :aria-label="t('settings')" @click="launch('settings')"><iconify-icon icon="mdi:cog" width="24"></iconify-icon></button>
+</footer>
+</body>
+</html>
