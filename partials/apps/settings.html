@@ -1,0 +1,23 @@
+<section class="card bg-base-100 shadow-xl animate__animated animate__fadeIn" aria-label="Settings" x-data="{open: true, wake: false, async toggleWake() { try { if (window.tbLock) { await window.tbLock.release(); window.tbLock = null; this.wake = false } else { window.tbLock = await navigator.wakeLock.request('screen'); this.wake = true } } catch (e) { this.wake = false } }}">
+  <header class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
+    <iconify-icon icon="mdi:cog" width="22"></iconify-icon>
+    <h2 class="grow font-semibold" x-text="t('settings')"></h2>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-expanded="open" @click="open = !open"><iconify-icon :icon="open ? 'mdi:window-minimize' : 'mdi:window-maximize'"></iconify-icon></button>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-label="t('close')" @click="$root.remove()"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  </header>
+  <div x-show="open" x-collapse class="p-3">
+    <div class="flex flex-col gap-3">
+      <label class="form-control"><span class="label-text" x-text="t('language')"></span>
+        <select class="select w-full" x-model="lang"><option value="en">English</option><option value="ja">日本語</option><option value="es">Español</option><option value="ar">العربية</option></select></label>
+      <label class="form-control"><span class="label-text" x-text="t('theme')"></span>
+        <select class="select w-full" x-model="theme"><option value="light">Light</option><option value="dark">Dark</option><option value="cupcake">Cupcake</option><option value="synthwave">Synthwave</option></select></label>
+      <div><span class="label-text" x-text="t('background')"></span>
+        <div class="mt-1 flex gap-2">
+          <template x-for="k in Object.keys(skies)" :key="k"><button class="btn h-10 w-16" :style="{background: skies[k]}" :aria-label="k" @click="bg = k; photo = ''"></button></template>
+        </div></div>
+      <label class="form-control"><span class="label-text" x-text="t('picture')"></span>
+        <input type="file" accept="image/*" class="file-input w-full" @change="$event.target.files[0] && (photo = URL.createObjectURL($event.target.files[0]))"></label>
+      <label class="label cursor-pointer justify-start gap-3"><input type="checkbox" class="toggle" :checked="wake" @change="toggleWake()"><span x-text="t('power')"></span></label>
+    </div>
+  </div>
+</section>

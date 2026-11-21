@@ -1,0 +1,20 @@
+<section class="card bg-base-100 shadow-xl animate__animated animate__fadeIn" aria-label="Files" x-data="{open: true, list: []}">
+  <header class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
+    <iconify-icon icon="mdi:folder-open" width="22"></iconify-icon>
+    <h2 class="grow font-semibold" x-text="t('files')"></h2>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-expanded="open" @click="open = !open"><iconify-icon :icon="open ? 'mdi:window-minimize' : 'mdi:window-maximize'"></iconify-icon></button>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-label="t('close')" @click="$root.remove()"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  </header>
+  <div x-show="open" x-collapse class="p-3">
+    <div class="flex flex-col gap-2">
+      <label class="form-control"><span class="label-text" x-text="t('pickfiles')"></span><input type="file" multiple class="file-input w-full" @change="list = [...$event.target.files]"></label>
+      <label class="form-control"><span class="label-text" x-text="t('pickfolder')"></span><input type="file" webkitdirectory class="file-input w-full" @change="list = [...$event.target.files]"></label>
+    </div>
+    <p class="mt-2 text-sm" x-text="list.length + ' items'"></p>
+    <ul class="max-h-48 overflow-auto text-sm">
+      <template x-for="f in list" :key="f.webkitRelativePath || f.name">
+        <li class="flex justify-between gap-2 border-b border-base-200 py-1"><span class="truncate" x-text="f.webkitRelativePath || f.name"></span><span x-text="(f.size / 1024).toFixed(1) + ' KB'"></span></li>
+      </template>
+    </ul>
+  </div>
+</section>
