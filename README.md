@@ -1,11 +1,11 @@
-# TaskBoard
+# GAIA
 
 A browser-based visual desktop (windows, files, jobs, network, music, settings, terminal) that is assembled from HTML markup. There are no first-party `.js` or `.css` files: capabilities are mounted with `<script src>` and `<link href>`, and behavior is bound through `id`, `class` and the attribute vocabularies of htmx, Alpine.js and _hyperscript.
 
 ## Files
 
 ```
-TaskBoard/
+GAIA/
 ├── index.html
 ├── README.md
 └── partials/
@@ -23,7 +23,7 @@ TaskBoard/
 The apps are HTML fragments fetched with htmx, so serve the folder over HTTP (opening `index.html` from `file://` will not work).
 
 ```
-cd TaskBoard
+cd GAIA
 python3 -m http.server 8000
 ```
 
