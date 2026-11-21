@@ -1,0 +1,13 @@
+<section class="card bg-base-100 shadow-xl animate__animated animate__fadeIn" aria-label="Terminal" x-data="{open: true, line: '', c: '', log: []}">
+  <header class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
+    <iconify-icon icon="mdi:console" width="22"></iconify-icon>
+    <h2 class="grow font-semibold" x-text="t('terminal')"></h2>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-expanded="open" @click="open = !open"><iconify-icon :icon="open ? 'mdi:window-minimize' : 'mdi:window-maximize'"></iconify-icon></button>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-label="t('close')" @click="$root.remove()"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  </header>
+  <div x-show="open" x-collapse class="p-3">
+    <pre class="mb-2 h-40 overflow-auto rounded-box bg-neutral p-2 font-mono text-sm text-neutral-content"><template x-for="(l, i) in log" :key="i"><div x-text="l"></div></template></pre>
+    <input class="input w-full font-mono" placeholder="help" aria-label="Command" x-model="line"
+      @keydown.enter="c = line.trim().toLowerCase(); line = ''; c && log.push('> ' + c); c === 'help' ? log.push(apps.map(a => a.id).join(' ')) : apps.some(a => a.id === c) ? (launch(c), log.push('ok')) : c && log.push('?')">
+  </div>
+</section>
