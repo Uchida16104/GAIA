@@ -1,0 +1,15 @@
+<section class="card bg-base-100 shadow-xl animate__animated animate__fadeIn" aria-label="Network" x-data="{open: true, ms: null, online: navigator.onLine, kind: (navigator.connection || {}).effectiveType || 'n/a', async ping() { const t0 = performance.now(); try { await fetch(location.pathname, {method: 'HEAD', cache: 'no-store'}); this.ms = Math.round(performance.now() - t0) } catch (e) { this.ms = -1 } }}">
+  <header class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
+    <iconify-icon icon="mdi:lan" width="22"></iconify-icon>
+    <h2 class="grow font-semibold" x-text="t('network')"></h2>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-expanded="open" @click="open = !open"><iconify-icon :icon="open ? 'mdi:window-minimize' : 'mdi:window-maximize'"></iconify-icon></button>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-label="t('close')" @click="$root.remove()"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  </header>
+  <div x-show="open" x-collapse class="p-3">
+    <div class="stats w-full" @online.window="online = true" @offline.window="online = false">
+      <div class="stat"><div class="stat-title"><iconify-icon :icon="online ? 'mdi:wifi' : 'mdi:wifi-off'" width="24"></iconify-icon></div><div class="stat-value text-2xl" x-text="online ? 'online' : 'offline'"></div><div class="stat-desc" x-text="kind"></div></div>
+      <div class="stat"><div class="stat-title"><iconify-icon icon="mdi:timer-outline" width="24"></iconify-icon></div><div class="stat-value text-2xl" x-text="ms === null ? '-' : ms < 0 ? 'failed' : ms + ' ms'"></div></div>
+    </div>
+    <button class="btn btn-primary btn-sm mt-3" @click="ping()"><iconify-icon icon="mdi:speedometer"></iconify-icon><span x-text="t('ping')"></span></button>
+  </div>
+</section>

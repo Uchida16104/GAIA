@@ -1,0 +1,23 @@
+<section class="card bg-base-100 shadow-xl animate__animated animate__fadeIn" aria-label="Jobs" x-data="{open: true, n: 3, timer: null, jobs: [{id: 1, name: 'Render', p: 0}, {id: 2, name: 'Backup', p: 0}, {id: 3, name: 'Report', p: 0}], reorder(k, pos) { const i = this.jobs.findIndex(j => j.id == k); const m = this.jobs.splice(i, 1)[0]; this.jobs.splice(pos, 0, m) }, start() { clearInterval(this.timer); this.timer = setInterval(() => { const j = this.jobs.find(j => j.p < 100); if (!j) { clearInterval(this.timer); return } j.p = Math.min(100, j.p + 10) }, 300) }, add() { this.n++; this.jobs.push({id: this.n, name: 'Job ' + this.n, p: 0}) }}">
+  <header class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
+    <iconify-icon icon="mdi:format-list-checks" width="22"></iconify-icon>
+    <h2 class="grow font-semibold" x-text="t('jobs')"></h2>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-expanded="open" @click="open = !open"><iconify-icon :icon="open ? 'mdi:window-minimize' : 'mdi:window-maximize'"></iconify-icon></button>
+    <button class="btn btn-ghost btn-xs btn-square" :aria-label="t('close')" @click="$root.remove()"><iconify-icon icon="mdi:close"></iconify-icon></button>
+  </header>
+  <div x-show="open" x-collapse class="p-3">
+    <ul class="flex flex-col gap-2" x-sort="reorder($item, $position)">
+      <template x-for="j in jobs" :key="j.id">
+        <li x-sort:item="j.id" class="flex items-center gap-2 rounded-box bg-base-200 p-2">
+          <iconify-icon icon="mdi:drag" width="20"></iconify-icon>
+          <span class="grow" x-text="j.name"></span>
+          <progress class="progress progress-primary w-28" :value="j.p" max="100"></progress>
+        </li>
+      </template>
+    </ul>
+    <div class="mt-3 flex gap-2">
+      <button class="btn btn-primary btn-sm" @click="start()"><iconify-icon icon="mdi:play"></iconify-icon><span x-text="t('start')"></span></button>
+      <button class="btn btn-sm" @click="add()"><iconify-icon icon="mdi:plus"></iconify-icon><span x-text="t('add')"></span></button>
+    </div>
+  </div>
+</section>
